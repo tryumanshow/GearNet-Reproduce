@@ -1,0 +1,6 @@
+# Follows default
+
+d_seq: 3
+d_radius: 10.0
+k_neighbors: 10
+d_long: 5

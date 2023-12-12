@@ -1,0 +1,108 @@
+
+
+PT:
+  LR: 0.001
+  Dropout: 0.1
+
+  PT_NAME_MAPPING:
+    0: Multiview_Contrast 
+    1: Residue_Type_Pred
+    2: Distance_Pred
+    3: Angle_Pred
+    4: Dihedral_Pred
+
+  LOSS_FLAG:
+    Multiview_Contrast: info_nce
+    Residue_Type_Pred: ce
+    Distance_Pred: mse
+    Angle_Pred: ce
+    Dihedral_Pred: ce
+
+  PT_MLP_DIM:
+    Multiview_Contrast: 1
+    Residue_Type_Pred: 1
+    Distance_Pred: 2
+    Angle_Pred: 3
+    Dihedral_Pred: 4
+
+  PT_TASK_CLASS:
+    Multiview_Contrast: None
+    Residue_Type_Pred: 21
+    Distance_Pred: 1
+    Angle_Pred: 8
+    Dihedral_Pred: 8
+
+  Hyperparam:
+    info_nce:
+      subseq_thres: 50
+      subspace_thres: 15
+      pt_multiview_masking_ratio: 0.15
+      pt_tau: 0.07
+      train_bsz:
+        GearNet-Edge: 96
+        GearNet-Edge-IEConv: 24
+    ce:
+      sampling_cnt: 512
+      train_bsz:
+        GearNet-Edge: 96
+        GearNet-Edge-IEConv: 32
+    mse:
+      sampling_cnt: 256
+      train_bsz:
+        GearNet-Edge: 128
+        GearNet-Edge-IEConv: 32
+
+FT:
+  FT_NAME_MAPPING:
+    0: EC
+    1: GO-MF
+    2: GO-BP
+    3: GO-CC
+    4: FC # Fold, Super, Fam are integrated
+    5: RC
+
+  LOSS_FLAG:
+    EC: bce
+    GO-MF: bce
+    GO-BP: bce
+    GO-CC: bce
+    FC: ce
+    RC: ce
+    
+  FT_OUTPUT_SIZE:
+    EC: 538
+    GO-MF: 489
+    GO-BP: 1943
+    GO-CC: 320 
+    FC: 1195
+    RC: 384
+
+  BASELINE:
+    GCN:
+      num_head: None
+    GAT:
+      num_head: 1
+    HGT:
+      num_head: 8
+
+  EC_GO:
+    LR: 1e-4
+    Dropout: 0.1
+    weight_decay: 0
+    n_epochs: 200
+    
+    scheduler: ReduceLROnPlateau
+    factor: 0.6
+    patience: 5
+
+    cores: 8
+
+  FC_RC:
+    LR: 1e-3
+    Dropout: 0.2
+    weight_decay: 5e-4
+    n_epochs: 300
+
+    scheduler: StepLR
+    stepsize: 50
+    gamma: 0.5
